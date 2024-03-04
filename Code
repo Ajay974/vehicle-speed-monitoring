@@ -1,0 +1,143 @@
+int enA = 3; 
+int in1 = 5;
+int in2 = 6;
+// Motor B connections
+int enB = 11;
+int in3 = 9;
+int in4 = 10;
+const int trigPin1 = 2; // Trigger pin for sensor 1
+const int echoPin1 = 4; // Echo pin for  sensor 1
+const int trigPin2 = 8; // Trigger pin for sensor 2
+const int echoPin2 = 12; // Echo pin for sensor 2
+const int trigPin3 = 7; // Trigger pin for sensor 3
+const int echoPin3 = 13; // Echo pin for sensor 3 
+long duration1, distance1, duration2, distance2,duration3, distance3,height,width,obj_size;
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+     pinMode(enA, OUTPUT);
+    pinMode(enB, OUTPUT);
+    pinMode(in1, OUTPUT);
+    pinMode(in2, OUTPUT);
+    pinMode(in3, OUTPUT);
+    pinMode(in4, OUTPUT);
+    pinMode(trigPin1, OUTPUT);
+    pinMode(echoPin1, INPUT);
+    pinMode(trigPin2, OUTPUT);
+    pinMode(echoPin2, INPUT);
+     pinMode(trigPin3, OUTPUT);
+  pinMode(echoPin3, INPUT); 
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  // Sensor 1
+     
+   int centerSensor = sensorThree();
+  int leftSensor = sensorOne();
+  int rightSensor =  sensorTwo();
+// Check the distance using the IF condition
+  if (30 >= centerSensor ) {
+
+    analogWrite(enA, 60);
+    analogWrite(enB, 60);
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+}
+else if( (30 >= rightSensor) || (30 >= leftSensor))
+{
+      Stop();
+    backward();
+    delay(1);
+    Serial.println("Stop");
+    delay(1000);
+  
+    if (leftSensor > rightSensor) {
+      right();
+      Serial.println("Right");
+      delay(1000);
+    } else {
+      left();
+      Serial.println("Left");
+      delay(1000);
+    }
+  }
+  Serial.println("Forward");
+  forward();
+}
+//Get the sensor values
+int sensorOne() {
+  //pulse output
+  digitalWrite(trigPin1, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin1, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin1, LOW);
+  duration1 = pulseIn(echoPin1, HIGH);
+  distance1 = (duration1 / 2) / 29.1;
+  return distance1; // Return the values from the sensor
+}
+
+//Get the sensor values
+int sensorTwo() {
+  //pulse output
+   digitalWrite(trigPin2, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin2, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin2, LOW);
+  duration2 = pulseIn(echoPin2, HIGH);
+  distance2 = (duration2 / 2) / 29.1;
+  return distance2; // Return the values from the sensor
+}
+
+//Get the sensor values
+int sensorThree() {
+  //pulse output
+   digitalWrite(trigPin3, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin3, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin3, LOW);
+  duration3 = pulseIn(echoPin3, HIGH);
+  distance3 = (duration3 / 2) / 29.1;
+
+  return distance3; // Return the values from the sensor
+}
+
+void forward() {
+ analogWrite(enA, 80);
+    analogWrite(enB, 80);
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+}
+void backward(){
+    analogWrite(enA, 80);
+    analogWrite(enB, 80);
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+}
+void left() {
+  analogWrite(enA, 80);
+    analogWrite(enB, 80);
+ digitalWrite(in2,HIGH);
+}
+void right() {
+   analogWrite(enA, 80);
+    analogWrite(enB, 80);
+  digitalWrite(in4,HIGH);
+}
+void Stop() { 
+   analogWrite(enA, 0);
+   analogWrite(enB, 0);
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, LOW);
+}
